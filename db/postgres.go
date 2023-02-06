@@ -1,148 +1,101 @@
-/*
- * @Author: Go不浪队
- * @Date: 2023-02-06 20:47:39
- * @LastEditTime: 2023-02-06 20:51:33
- * @Description:
- */
-
-package dal
+package db
 
 import (
+	"context"
 	"errors"
+	"fmt"
+	gormlog "log"
+	"os"
+	"time"
 
-	"github.com/go-pg/pg/v10"
-	"github.com/go-pg/pg/v10/orm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"tiktok/pkg/config"
 	"tiktok/pkg/log"
 )
- 
- var db *pg.DB
- 
- func init() {
-	 // Register many-to-many model so ORM can better recognize m2m relation.
-	 // This should be done before dependant models are used.
-	//  orm.RegisterTable((*Collection)(nil))
-	//  orm.RegisterTable((*Like)(nil))
- }
- 
- // Connect database
- func Connect() *pg.DB {
-	 db = pg.Connect(&pg.Options{
-		 Addr:     config.C.Postgresql.Host + ":" + config.C.Postgresql.Port,
-		 User:     config.C.Postgresql.User,
-		 Password: config.C.Postgresql.Password,
-		 Database: config.C.Postgresql.Dbname,
-	 })
-	 var n int
-	 if _, err := db.QueryOne(pg.Scan(&n), "SELECT 1"); err != nil {
-		 log.Logger.Error("Postgresql-connection failed")
-	 }
-	 log.Logger.Info("Postgresql connected")
-	 return db
- }
- 
- // Close database
- func Close() {
-	 if err := db.Close(); err != nil {
-		 log.Logger.Panic("Postgresql-close failed")
-	 }
- }
- 
- // CreateSchema creates database schema for User model
- func CreateSchema() error {
-	 models := []interface{}{
-		 //(*Board)(nil), (*User)(nil), (*Post)(nil), (*Comment)(nil),
-		 //(*FollowShip)(nil), (*Like)(nil), (*Manage)(nil), (*Join)(nil), (*Board)(nil), (*Comment)(nil),
-		//  (*Apply)(nil), (*Notification)(nil), (*Message)(nil),
-	 }
-	 for _, model := range models {
-		 err := db.Model(model).CreateTable(&orm.CreateTableOptions{
-			 Temp: false,
-		 })
-		 if err != nil {
-			 return err
-		 }
-	 }
-	 return nil
- }
- 
- // Transaction
- 
- var tx *pg.Tx
- 
- type Transaction struct {
-	 Tx    *pg.Tx
-	 abort bool
- }
- 
- func BeginTx() *Transaction {
-	 tx, _ = db.Begin()
-	 trans := &Transaction{
-		 Tx:    tx,
-		 abort: false,
-	 }
-	 return trans
- }
- 
- func (trans *Transaction) Rollback() {
-	 err := trans.Tx.Rollback()
-	 if err != nil {
-		 log.Logger.Error("tx-close failed:" + err.Error())
-	 }
-	 trans.abort = true
-	 tx = nil
- }
- 
- func (trans *Transaction) Close() {
-	 if trans.abort == false {
-		 err := trans.Tx.Commit()
-		 if err != nil {
-			 log.Logger.Error("tx-commit failed:" + err.Error())
-		 }
-	 }
-	 err := trans.Tx.Close()
-	 if err != nil {
-		 log.Logger.Error("tx-close failed:" + err.Error())
-	 }
-	 tx = nil
- }
- 
- // Some shared model functions
- 
- func Insert(m interface{}) error {
-	 _, err := tx.Model(m).Insert()
-	 return err
- }
- 
- // CheckPK , when doesn't exist return false
- func CheckPK(m interface{}) (err error) {
-	 res, err := tx.Model(m).WherePK().Exists()
-	 if err != nil {
-		 return err
-	 }
-	 if res == false {
-		 return errors.New("PK doesn't exist")
-	 }
-	 return nil
- }
- 
- func GetByPK(m interface{}) error {
-	 err := tx.Model(m).WherePK().Select()
-	 return err
- }
- 
- func GetAll(m interface{}) error {
-	 //m *[]model.Xx
-	 err := tx.Model(m).Select()
-	 return err
- }
- 
- func Delete(m interface{}) error {
-	 _, err := tx.Model(m).WherePK().Delete()
-	 if err != nil {
-		 return err
-	 }
-	 return nil
- }
- 
+
+var (
+	tx *gorm.DB
+
+	schemas = []interface{}{
+		&User{},
+		// TODO:
+	}
+)
+
+func init() {
+	var err error
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
+		config.C.Postgresql.Host,
+		config.C.Postgresql.User,
+		config.C.Postgresql.Password,
+		config.C.Postgresql.Dbname,
+		config.C.Postgresql.Port,
+	)
+	logLevel := logger.Warn
+	if config.C.SQLDebug {
+		logLevel = logger.Info
+	}
+	newLogger := logger.New(
+		gormlog.New(os.Stdout, "\r\n", gormlog.LstdFlags), // io writer（日志输出的目标，前缀和日志包含的内容）
+		logger.Config{
+			SlowThreshold:             time.Second, // 慢 SQL 阈值
+			LogLevel:                  logLevel,    // 日志级别
+			IgnoreRecordNotFoundError: true,        // 忽略ErrRecordNotFound（记录未找到）错误
+			Colorful:                  true,        // 禁用彩色打印
+		},
+	)
+
+	tx, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: newLogger,
+	})
+	if err != nil {
+		log.Logger.Error("postgres connection failed: ", err)
+		return
+	}
+	err = tx.AutoMigrate(schemas...)
+	if err != nil {
+		log.Logger.Error("postgres migrate failed: ", err)
+		return
+	}
+
+	log.Logger.Info("PostgreSQL server connected :D")
+}
+
+// --- Transaction ---
+
+func beginTransactionWithCtx(ctx context.Context) *gorm.DB {
+	tx := tx.Begin()
+	if err := tx.Error; err != nil {
+		log.Logger.Error("begin transaction error: ", err)
+	}
+	return tx.WithContext(ctx)
+}
+
+func (m *Context) Close() {
+	// if !m.abort {
+	// 	m.tx.Commit()
+	// }
+	if r := recover(); r != nil {
+		m.Transaction.Rollback()
+	}
+	m.cancel()
+}
+
+func (m *Context) Abort() {
+	m.Transaction.Rollback()
+	m.cancel()
+	// m.abort = true
+}
+
+func (m *Context) Commit() error {
+	m.commit = true
+	return m.Transaction.Commit().Error
+}
+
+func (m *Context) IsExisted(query interface{}) bool {
+	return !errors.Is(m.Transaction.Where(query).Take(query).Error, gorm.ErrRecordNotFound) 
+}

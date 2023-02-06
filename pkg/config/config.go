@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:32:30
- * @LastEditTime: 2023-02-06 22:06:03
+ * @LastEditTime: 2023-02-07 00:53:49
  * @Description:
  */
 package config
@@ -41,7 +41,8 @@ type Config struct {
 	Wechat  wechat  `yaml:"wechat"`
 	Postgresql  postgresql  `yaml:"postgresql"`
 	LogConf logConf `yaml:"logConf"`
-	Debug   bool    `yaml:"debug"`
+	Debug   bool    `yaml:"debug"`	
+	SQLDebug       bool     `yaml:"sql_debug,omitempty"`
 }
 
 type app struct {

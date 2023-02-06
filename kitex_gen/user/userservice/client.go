@@ -11,10 +11,9 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	ContainsName(ctx context.Context, containsNameReq *user.ContainsNameReq, callOptions ...callopt.Option) (r *user.ContainsNameResp, err error)
-	CreateUser(ctx context.Context, createUserReq *user.CreateUserReq, callOptions ...callopt.Option) (r *user.CreateUserResp, err error)
-	GetUserByName(ctx context.Context, getUserByNameReq *user.GetUserByNameReq, callOptions ...callopt.Option) (r *user.GetUserByNameResp, err error)
-	GetUserById(ctx context.Context, getUserByIdReq *user.GetUserByIdReq, callOptions ...callopt.Option) (r *user.GetUserByIdResp, err error)
+	Register(ctx context.Context, serviceReqRegister *user.ServiceReqRegister, callOptions ...callopt.Option) (r *user.ServiceResRegister, err error)
+	Signin(ctx context.Context, serviceReqSignin *user.ServiceReqSignin, callOptions ...callopt.Option) (r *user.ServiceResSignin, err error)
+	GetUserById(ctx context.Context, serviceReqGetUserById *user.ServiceReqGetUserById, callOptions ...callopt.Option) (r *user.ServiceResGetUserById, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -46,22 +45,17 @@ type kUserServiceClient struct {
 	*kClient
 }
 
-func (p *kUserServiceClient) ContainsName(ctx context.Context, containsNameReq *user.ContainsNameReq, callOptions ...callopt.Option) (r *user.ContainsNameResp, err error) {
+func (p *kUserServiceClient) Register(ctx context.Context, serviceReqRegister *user.ServiceReqRegister, callOptions ...callopt.Option) (r *user.ServiceResRegister, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.ContainsName(ctx, containsNameReq)
+	return p.kClient.Register(ctx, serviceReqRegister)
 }
 
-func (p *kUserServiceClient) CreateUser(ctx context.Context, createUserReq *user.CreateUserReq, callOptions ...callopt.Option) (r *user.CreateUserResp, err error) {
+func (p *kUserServiceClient) Signin(ctx context.Context, serviceReqSignin *user.ServiceReqSignin, callOptions ...callopt.Option) (r *user.ServiceResSignin, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.CreateUser(ctx, createUserReq)
+	return p.kClient.Signin(ctx, serviceReqSignin)
 }
 
-func (p *kUserServiceClient) GetUserByName(ctx context.Context, getUserByNameReq *user.GetUserByNameReq, callOptions ...callopt.Option) (r *user.GetUserByNameResp, err error) {
+func (p *kUserServiceClient) GetUserById(ctx context.Context, serviceReqGetUserById *user.ServiceReqGetUserById, callOptions ...callopt.Option) (r *user.ServiceResGetUserById, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetUserByName(ctx, getUserByNameReq)
-}
-
-func (p *kUserServiceClient) GetUserById(ctx context.Context, getUserByIdReq *user.GetUserByIdReq, callOptions ...callopt.Option) (r *user.GetUserByIdResp, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetUserById(ctx, getUserByIdReq)
+	return p.kClient.GetUserById(ctx, serviceReqGetUserById)
 }

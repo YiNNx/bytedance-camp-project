@@ -19,10 +19,9 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*user.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"ContainsName":  kitex.NewMethodInfo(containsNameHandler, newUserServiceContainsNameArgs, newUserServiceContainsNameResult, false),
-		"CreateUser":    kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
-		"GetUserByName": kitex.NewMethodInfo(getUserByNameHandler, newUserServiceGetUserByNameArgs, newUserServiceGetUserByNameResult, false),
-		"GetUserById":   kitex.NewMethodInfo(getUserByIdHandler, newUserServiceGetUserByIdArgs, newUserServiceGetUserByIdResult, false),
+		"Register":    kitex.NewMethodInfo(registerHandler, newUserServiceRegisterArgs, newUserServiceRegisterResult, false),
+		"Signin":      kitex.NewMethodInfo(signinHandler, newUserServiceSigninArgs, newUserServiceSigninResult, false),
+		"GetUserById": kitex.NewMethodInfo(getUserByIdHandler, newUserServiceGetUserByIdArgs, newUserServiceGetUserByIdResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -38,64 +37,46 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	return svcInfo
 }
 
-func containsNameHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceContainsNameArgs)
-	realResult := result.(*user.UserServiceContainsNameResult)
-	success, err := handler.(user.UserService).ContainsName(ctx, realArg.ContainsNameReq)
+func registerHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceRegisterArgs)
+	realResult := result.(*user.UserServiceRegisterResult)
+	success, err := handler.(user.UserService).Register(ctx, realArg.ServiceReqRegister)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newUserServiceContainsNameArgs() interface{} {
-	return user.NewUserServiceContainsNameArgs()
+func newUserServiceRegisterArgs() interface{} {
+	return user.NewUserServiceRegisterArgs()
 }
 
-func newUserServiceContainsNameResult() interface{} {
-	return user.NewUserServiceContainsNameResult()
+func newUserServiceRegisterResult() interface{} {
+	return user.NewUserServiceRegisterResult()
 }
 
-func createUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceCreateUserArgs)
-	realResult := result.(*user.UserServiceCreateUserResult)
-	success, err := handler.(user.UserService).CreateUser(ctx, realArg.CreateUserReq)
+func signinHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceSigninArgs)
+	realResult := result.(*user.UserServiceSigninResult)
+	success, err := handler.(user.UserService).Signin(ctx, realArg.ServiceReqSignin)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newUserServiceCreateUserArgs() interface{} {
-	return user.NewUserServiceCreateUserArgs()
+func newUserServiceSigninArgs() interface{} {
+	return user.NewUserServiceSigninArgs()
 }
 
-func newUserServiceCreateUserResult() interface{} {
-	return user.NewUserServiceCreateUserResult()
-}
-
-func getUserByNameHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceGetUserByNameArgs)
-	realResult := result.(*user.UserServiceGetUserByNameResult)
-	success, err := handler.(user.UserService).GetUserByName(ctx, realArg.GetUserByNameReq)
-	if err != nil {
-		return err
-	}
-	realResult.Success = success
-	return nil
-}
-func newUserServiceGetUserByNameArgs() interface{} {
-	return user.NewUserServiceGetUserByNameArgs()
-}
-
-func newUserServiceGetUserByNameResult() interface{} {
-	return user.NewUserServiceGetUserByNameResult()
+func newUserServiceSigninResult() interface{} {
+	return user.NewUserServiceSigninResult()
 }
 
 func getUserByIdHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*user.UserServiceGetUserByIdArgs)
 	realResult := result.(*user.UserServiceGetUserByIdResult)
-	success, err := handler.(user.UserService).GetUserById(ctx, realArg.GetUserByIdReq)
+	success, err := handler.(user.UserService).GetUserById(ctx, realArg.ServiceReqGetUserById)
 	if err != nil {
 		return err
 	}
@@ -120,39 +101,29 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) ContainsName(ctx context.Context, containsNameReq *user.ContainsNameReq) (r *user.ContainsNameResp, err error) {
-	var _args user.UserServiceContainsNameArgs
-	_args.ContainsNameReq = containsNameReq
-	var _result user.UserServiceContainsNameResult
-	if err = p.c.Call(ctx, "ContainsName", &_args, &_result); err != nil {
+func (p *kClient) Register(ctx context.Context, serviceReqRegister *user.ServiceReqRegister) (r *user.ServiceResRegister, err error) {
+	var _args user.UserServiceRegisterArgs
+	_args.ServiceReqRegister = serviceReqRegister
+	var _result user.UserServiceRegisterResult
+	if err = p.c.Call(ctx, "Register", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) CreateUser(ctx context.Context, createUserReq *user.CreateUserReq) (r *user.CreateUserResp, err error) {
-	var _args user.UserServiceCreateUserArgs
-	_args.CreateUserReq = createUserReq
-	var _result user.UserServiceCreateUserResult
-	if err = p.c.Call(ctx, "CreateUser", &_args, &_result); err != nil {
+func (p *kClient) Signin(ctx context.Context, serviceReqSignin *user.ServiceReqSignin) (r *user.ServiceResSignin, err error) {
+	var _args user.UserServiceSigninArgs
+	_args.ServiceReqSignin = serviceReqSignin
+	var _result user.UserServiceSigninResult
+	if err = p.c.Call(ctx, "Signin", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetUserByName(ctx context.Context, getUserByNameReq *user.GetUserByNameReq) (r *user.GetUserByNameResp, err error) {
-	var _args user.UserServiceGetUserByNameArgs
-	_args.GetUserByNameReq = getUserByNameReq
-	var _result user.UserServiceGetUserByNameResult
-	if err = p.c.Call(ctx, "GetUserByName", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *kClient) GetUserById(ctx context.Context, getUserByIdReq *user.GetUserByIdReq) (r *user.GetUserByIdResp, err error) {
+func (p *kClient) GetUserById(ctx context.Context, serviceReqGetUserById *user.ServiceReqGetUserById) (r *user.ServiceResGetUserById, err error) {
 	var _args user.UserServiceGetUserByIdArgs
-	_args.GetUserByIdReq = getUserByIdReq
+	_args.ServiceReqGetUserById = serviceReqGetUserById
 	var _result user.UserServiceGetUserByIdResult
 	if err = p.c.Call(ctx, "GetUserById", &_args, &_result); err != nil {
 		return

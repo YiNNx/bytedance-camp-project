@@ -1,11 +1,11 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-06 21:05:56
- * @LastEditTime: 2023-02-06 21:07:00
+ * @LastEditTime: 2023-02-06 22:32:21
  * @Description:
  */
 
-package dal
+package db
 
 import (
 	"time"

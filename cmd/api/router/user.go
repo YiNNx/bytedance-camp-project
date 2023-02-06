@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:16:12
- * @LastEditTime: 2023-02-06 20:24:22
+ * @LastEditTime: 2023-02-07 00:24:53
  * @Description:
  */
 package router
@@ -12,10 +12,10 @@ import (
 	"tiktok/cmd/api/controller"
 )
 
-func initUserRouters(r *gin.Engine) {
+func initUserRouters(r *gin.RouterGroup) {
 	user := r.Group("/user")
 	{
-		user.POST("/signup", controller.SignUp)
-		user.POST("/signin", controller.SignIn)
+		user.POST("/register", controller.Register)
+		user.POST("/login", controller.Login)
 	}
 }

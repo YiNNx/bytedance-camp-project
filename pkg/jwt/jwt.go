@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:35:14
- * @LastEditTime: 2023-02-06 21:36:18
+ * @LastEditTime: 2023-02-07 01:52:41
  * @Description:
  */
 
@@ -16,11 +16,11 @@ import (
 )
 
 type JwtUserClaims struct {
-	Id string `json:"id"` // weixin open id
+	Id int `json:"id"` // weixin open id
 	jwt.StandardClaims
 }
 
-func GenerateToken(id string) (string, error) {
+func GenerateToken(id int) (string, error) {
 	claims := &JwtUserClaims{
 		id,
 		jwt.StandardClaims{

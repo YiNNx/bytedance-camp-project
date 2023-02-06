@@ -11,6 +11,6 @@ func ValidatePwd(pwd string, pwdHash string) error {
 	return nil
 }
 
-func PwdHash(pwd string) ([]byte, error) {
+func HashPassword(pwd string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
 }
