@@ -1,24 +1,22 @@
 debug: true
+sql_debug: false
 
 app:
   addr: ":3000"
-  prefix: ""
+  prefix: "tiktok"
   timeformat: "2006-01-02 15:04:05"
 redis:
   addr: "redis:6379"
-  password: "root_87542701"
+  password: "password"
   db: 0
 db:
   addr: "27017"
-  db: "${myapp}"
+  db: "tiktok"
   username: "root"
-  password: "root_87542701"
+  password: "password"
   timeout_second: 5
 jwt:
-  secret: "jsonwebtoken87542701"
-wechat:
-  app_id: "wxdb6d54fc376bf014"
-  app_secret: "57d68966a5c4cc0164c01074b9df5e35"
+  secret: "eu2iw8sa"
 logConf:
   log_path: "log"
   log_file_name: "log"

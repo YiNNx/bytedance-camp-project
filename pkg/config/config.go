@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:32:30
- * @LastEditTime: 2023-02-07 00:53:49
+ * @LastEditTime: 2023-02-07 02:19:09
  * @Description:
  */
 package config
@@ -35,11 +35,9 @@ const (
 // Config 配置
 type Config struct {
 	App     app     `yaml:"app"`
-	DB      db      `yaml:"db"`
+	Postgresql  postgresql  `yaml:"postgresql"`
 	Redis   redis   `yaml:"redis"`
 	JWT     jwt     `yaml:"jwt"`
-	Wechat  wechat  `yaml:"wechat"`
-	Postgresql  postgresql  `yaml:"postgresql"`
 	LogConf logConf `yaml:"logConf"`
 	Debug   bool    `yaml:"debug"`	
 	SQLDebug       bool     `yaml:"sql_debug,omitempty"`
@@ -51,14 +49,6 @@ type app struct {
 	TimeFormat string `yaml:"timeformat"`
 }
 
-type db struct {
-	Addr     string `yaml:"addr"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	DB       string `yaml:"db"`
-	Timeout  int    `yaml:"timeout_second"`
-}
-
 type redis struct {
 	Addr     string `yaml:"addr"`
 	Password string `yaml:"password"`
@@ -67,11 +57,6 @@ type redis struct {
 
 type jwt struct {
 	Secret string `yaml:"secret"`
-}
-
-type wechat struct {
-	AppID     string `yaml:"app_id"`
-	AppSecret string `yaml:"app_secret"`
 }
 
 type logConf struct {
@@ -111,5 +96,5 @@ func InitConfig() {
 		return
 	}
 	C = config
-	log.Println("\033[36m" + "[INFO]" + "\033[0m"+" Config "+configFile+" loaded.")
+	log.Println("Config "+configFile+" loaded.")
 }
