@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:32:30
- * @LastEditTime: 2023-02-06 21:35:44
+ * @LastEditTime: 2023-02-06 22:06:03
  * @Description:
  */
 package config
@@ -97,7 +97,7 @@ func InitConfig() {
 		env = v
 	}
 	configFile := fmt.Sprintf("%s.yml", env)
-	data, err := os.ReadFile(fmt.Sprintf("../env/config/%s", configFile))
+	data, err := os.ReadFile(fmt.Sprintf("../config/%s", configFile))
 	if err != nil {
 		log.Println("Read config error!")
 		return

@@ -1,11 +1,11 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:36:59
- * @LastEditTime: 2023-02-06 20:36:59
+ * @LastEditTime: 2023-02-06 22:05:17
  * @Description:
  */
 
-package pkg
+package validator
 
 import validator "gopkg.in/go-playground/validator.v9"
 
