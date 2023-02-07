@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:32:30
- * @LastEditTime: 2023-02-07 19:46:17
+ * @LastEditTime: 2023-02-07 22:39:59
  * @Description:
  */
 package config
@@ -26,7 +26,6 @@ type Config struct {
 
 	App     app     `yaml:"app"`
 	Postgresql  postgresql  `yaml:"postgresql"`
-	Redis   redis   `yaml:"redis"`
 	JWT     jwt     `yaml:"jwt"`
 	Service service `yaml:"service"`
 }
@@ -35,12 +34,6 @@ type app struct {
 	Addr       string `yaml:"addr"`
 	Prefix     string `yaml:"prefix"`
 	TimeFormat string `yaml:"timeformat"`
-}
-
-type redis struct {
-	Addr     string `yaml:"addr"`
-	Password string `yaml:"password"`
-	DB       int    `yaml:"db"`
 }
 
 type jwt struct {

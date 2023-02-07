@@ -14,10 +14,6 @@ postgresql:
   user: "root"
   password: "password"
   dbname: tiktok
-redis:
-  addr: "127.0.0.1:6379"
-  password: "password"
-  db: 0
 
 service:
   user_host_port: "127.0.0.1:8801"

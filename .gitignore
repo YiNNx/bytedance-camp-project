@@ -15,5 +15,5 @@
 # vendor/
 
 go.sum
-
+output
 ./vscode

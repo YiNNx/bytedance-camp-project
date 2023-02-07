@@ -16,22 +16,6 @@ services:
     restart: always
     networks:
       - tiktok
-  redis:
-    image: redis:6.2.5
-    ports:
-      - "6379:6379"
-    environment:
-      - TZ=Asia/Shanghai
-    container_name: tiktok_redis
-    volumes:
-      - ./output/data/redis:/data
-      - /etc/localtime:/etc/localtime:ro
-    command:
-      --requirepass "password" #set password
-    privileged: true
-    tty: true
-    networks:
-      - tiktok
 
 networks:
   tiktok:
