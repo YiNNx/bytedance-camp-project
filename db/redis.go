@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-06 21:05:56
- * @LastEditTime: 2023-02-06 22:32:21
+ * @LastEditTime: 2023-02-07 20:29:36
  * @Description:
  */
 
@@ -18,7 +18,6 @@ import (
 
  var (
 	 redisClient *redis.Client
-
  )
  
  const (
@@ -42,7 +41,7 @@ import (
 		 log.Logger.Debug(err)
 		 log.Logger.Error(err)
 	 } else {
-		 log.Logger.Info("Redis connected successfully!")
+		 log.Logger.Info("Redis server connected.")
 	 }
  
  }

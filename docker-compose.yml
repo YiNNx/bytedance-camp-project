@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  postgres: 
+    image: postgres:14
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./output/data/postgres:/data/bd
+    environment:
+      - POSTGRES_DB=tiktok
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+    container_name: tiktok_postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - tiktok
+  redis:
+    image: redis:6.2.5
+    ports:
+      - "6379:6379"
+    environment:
+      - TZ=Asia/Shanghai
+    container_name: tiktok_redis
+    volumes:
+      - ./output/data/redis:/data
+      - /etc/localtime:/etc/localtime:ro
+    command:
+      --requirepass "password" #set password
+    privileged: true
+    tty: true
+    networks:
+      - tiktok
+
+networks:
+  tiktok:
+    driver: overlay
+    attachable: true

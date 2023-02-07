@@ -1,22 +1,18 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:37:34
- * @LastEditTime: 2023-02-06 20:37:47
+ * @LastEditTime: 2023-02-07 19:42:20
  * @Description:
  */
 package log
 
 import (
 	"fmt"
-	"path"
 	"path/filepath"
 	"runtime"
-	"time"
 
 	"github.com/TwiN/go-color"
 	nested "github.com/antonfisher/nested-logrus-formatter"
-	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
-	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 
 	"tiktok/pkg/config"
@@ -43,27 +39,6 @@ func getLogger() *logrus.Logger {
 	// }
 	logger.SetLevel(logrus.DebugLevel)
 
-	baseLogPath := path.Join(config.C.LogConf.LogPath, config.C.LogConf.LogFileName)
-	writer, err := rotatelogs.New(
-		baseLogPath+"-%Y-%m-%d",
-		rotatelogs.WithLinkName(baseLogPath),
-		rotatelogs.WithMaxAge(7*24*time.Hour),
-		rotatelogs.WithRotationTime(24*time.Hour),
-	)
-	if err != nil {
-		logger.Fatal(err)
-	}
-
-	lfHook := lfshook.NewHook(lfshook.WriterMap{
-		logrus.DebugLevel: writer,
-		logrus.InfoLevel:  writer,
-		logrus.WarnLevel:  writer,
-		logrus.ErrorLevel: writer,
-		logrus.FatalLevel: writer,
-		logrus.PanicLevel: writer,
-	}, &logrus.JSONFormatter{})
-
-	logger.AddHook(lfHook)
 	return logger
 }
 

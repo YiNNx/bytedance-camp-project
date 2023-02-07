@@ -5,19 +5,23 @@ app:
   addr: ":3000"
   prefix: "tiktok"
   timeformat: "2006-01-02 15:04:05"
-redis:
-  addr: "redis:6379"
-  password: "password"
-  db: 0
-db:
-  addr: "27017"
-  db: "tiktok"
-  username: "root"
-  password: "password"
-  timeout_second: 5
 jwt:
   secret: "eu2iw8sa"
-logConf:
-  log_path: "log"
-  log_file_name: "log"
+
+postgresql:
+  host: "127.0.0.1"
+  port: "5432"
+  user: "root"
+  password: "password"
+  dbname: tiktok
+redis:
+  addr: "127.0.0.1:6379"
+  password: "password"
+  db: 0
+
+service:
+  user_host_port: "127.0.0.1:8801"
+  video_host_port: "127.0.0.1:8802"
+  favorite_host_port: "127.0.0.1:8803"
+  comment_host_port: "127.0.0.1:8804"
 

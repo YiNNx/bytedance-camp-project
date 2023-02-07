@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-06 21:12:02
- * @LastEditTime: 2023-02-07 02:07:20
+ * @LastEditTime: 2023-02-07 20:58:19
  * @Description:
  */
 
@@ -20,8 +20,8 @@ import (
 
 var userClient userservice.Client
 
-func initUserRpc() {
-	c, err := userservice.NewClient("example", client.WithHostPorts(config.UserHostPorts))
+func init() {
+	c, err := userservice.NewClient("user", client.WithHostPorts(config.C.Service.UserHostPort))
 	if err != nil {
 		panic(err)
 	}

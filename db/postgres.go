@@ -62,7 +62,7 @@ func init() {
 		return
 	}
 
-	log.Logger.Info("PostgreSQL server connected :D")
+	log.Logger.Info("PostgreSQL server connected.")
 }
 
 // --- Transaction ---

@@ -1,7 +1,7 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 20:32:30
- * @LastEditTime: 2023-02-07 02:19:09
+ * @LastEditTime: 2023-02-07 19:46:17
  * @Description:
  */
 package config
@@ -19,28 +19,16 @@ var (
 	C    *Config
 )
 
-const (
-	UserPort          = ":8801"
-	VideoPort         = ":8802"
-	FavoritePort      = ":8803"
-	CommentPort       = ":8804"
-	RelationPort      = ":8805"
-	UserHostPorts     = "0.0.0.0" + UserPort
-	VideoHostPorts    = "0.0.0.0" + VideoPort
-	FavoriteHostPorts = "0.0.0.0" + FavoritePort
-	CommentHostPorts  = "0.0.0.0" + CommentPort
-	RelationHostPorts = "0.0.0.0" + RelationPort
-)
-
 // Config 配置
 type Config struct {
+	Debug   bool    `yaml:"debug"`	
+	SQLDebug       bool     `yaml:"sql_debug,omitempty"`
+
 	App     app     `yaml:"app"`
 	Postgresql  postgresql  `yaml:"postgresql"`
 	Redis   redis   `yaml:"redis"`
 	JWT     jwt     `yaml:"jwt"`
-	LogConf logConf `yaml:"logConf"`
-	Debug   bool    `yaml:"debug"`	
-	SQLDebug       bool     `yaml:"sql_debug,omitempty"`
+	Service service `yaml:"service"`
 }
 
 type app struct {
@@ -59,11 +47,6 @@ type jwt struct {
 	Secret string `yaml:"secret"`
 }
 
-type logConf struct {
-	LogPath     string `yaml:"log_path"`
-	LogFileName string `yaml:"log_file_name"`
-}
-
 type postgresql struct {
 	Host     string `yaml:"host,omitempty"`
 	Port     string `yaml:"port,omitempty"`
@@ -72,29 +55,31 @@ type postgresql struct {
 	Dbname   string `yaml:"dbname,omitempty"`
 }
 
+type service struct {
+	UserHostPort     string `yaml:"user_host_port"`
+	VideoHostPort    string `yaml:"video_host_port"`
+	FavoriteHostPort string `yaml:"favorite_host_port"`
+	CommentHostPort  string `yaml:"comment_host_port"`
+}
+
 func init() {
 	InitConfig()
 }
 
 func InitConfig() {
-	env := "dev"
-	// 如果有设置 ENV ，则使用ENV中的环境
-	if v, ok := os.LookupEnv("ENV"); ok {
-		env = v
-	}
-	configFile := fmt.Sprintf("%s.yml", env)
-	data, err := os.ReadFile(fmt.Sprintf("../config/%s", configFile))
+	data, err := os.ReadFile(fmt.Sprintf("./config/dev.yml"))
 	if err != nil {
-		log.Println("Read config error!")
+		log.Println("Read config error!\n"+err.Error())
 		return
 	}
 
 	config := &Config{}
 	err = yaml.Unmarshal(data, config)
 	if err != nil {
-		log.Println("Unmarshal config error!")
+		log.Println("Unmarshal config error!"+err.Error())
 		return
 	}
 	C = config
-	log.Println("Config "+configFile+" loaded.")
+	log.Println("Config loaded.")
+	// log.Println(C)
 }
