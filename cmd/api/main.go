@@ -1,11 +1,11 @@
 /*
  * @Author: Go不浪队
  * @Date: 2023-02-05 19:31:45
- * @LastEditTime: 2023-02-07 02:22:33
+ * @LastEditTime: 2023-02-07 19:08:20
  * @Description:
  */
 
-package api
+package main
 
 import (
 	"github.com/gin-gonic/gin"
