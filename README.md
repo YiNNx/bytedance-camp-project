@@ -1,7 +1,7 @@
 
-# Waterlang-Tiktok
+# Mini-Tiktok
 
-2023 Btyedance Camp Group Project
+2023 Bytedance Camp Group Project
 
 
 ```
